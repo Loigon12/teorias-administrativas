@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mapa mental de Melo Caramelo</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --font-sans: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --brand: #eb3257;
+      --brand-dark: #b51f40;
+      --brand-soft: #fff0f3;
+      --brand-pale: #f9c4cf;
+      --lime: #b7df39;
+      --lime-border: #91b81c;
+      --lime-soft: #eff7d4;
+      --lime-dark: #3b4a0b;
+      --surface: #ffffff;
+      --page: #fff7f8;
+      --text-primary: #471522;
+      --text-secondary: #9c6572;
+      --border: #f4d5dc;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      padding: 34px 24px 40px;
+      font-family: var(--font-sans);
+      background: var(--page);
+      color: var(--text-primary);
+      display: flex;
+      justify-content: center;
+    }
+
+    #vis-container {
+      width: 100%;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 28px 30px 26px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      box-shadow: 0 16px 48px rgb(181 31 64 / 8%);
+    }
+
+    .page-header { text-align: center; }
+    .eyebrow {
+      margin-bottom: 8px;
+      color: var(--brand);
+      font-size: 11px;
+      font-weight: 750;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+    h1 {
+      color: var(--brand-dark);
+      font-size: clamp(26px, 4vw, 36px);
+      letter-spacing: -0.04em;
+      line-height: 1.1;
+    }
+    .subtitle {
+      margin-top: 9px;
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+
+    #map {
+      display: block;
+      width: 100%;
+      max-height: 72vh;
+      height: auto;
+      margin: 10px auto 0;
+      overflow: visible;
+    }
+
+    .th { font-size: 14px; font-weight: 600; fill: var(--brand-dark); }
+    .center-ring { fill: var(--brand); stroke: #ffffff; }
+
+    .node { cursor: pointer; }
+    .node rect {
+      fill: #ffffff;
+      stroke: var(--brand-pale);
+      transition: stroke-width 0.15s ease, fill 0.15s ease, filter 0.15s ease;
+    }
+    .node.identity rect { fill: var(--brand); stroke: var(--brand); }
+    .node.identity text { fill: #ffffff; }
+    .node.operation rect { fill: var(--lime-soft); stroke: var(--lime-border); }
+    .node.operation text { fill: var(--lime-dark); }
+    .node:hover rect { fill: var(--brand); filter: drop-shadow(0 3px 5px rgb(235 50 87 / 20%)); }
+    .node:hover text { fill: #ffffff; }
+    .node.operation:hover rect { fill: var(--lime); stroke: var(--lime-border); }
+    .node.operation:hover text { fill: var(--lime-dark); }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      margin: 0 0 18px;
+      font-size: 12.5px;
+      color: var(--text-secondary);
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: var(--brand-soft);
+    }
+    .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+    #panel {
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 17px 20px;
+      background: var(--brand-soft);
+      font-size: 15px;
+      line-height: 1.6;
+      min-height: 76px;
+    }
+    .panel-hint { color: var(--text-secondary); }
+    .panel-q { color: var(--brand-dark); font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+    }
+
+    @media (max-width: 600px) {
+      body { padding: 12px; }
+      #vis-container { padding: 22px 10px 14px; border-radius: 18px; }
+      .subtitle { padding: 0 8px; font-size: 13px; }
+      #map { max-height: none; }
+      .legend { gap: 8px; margin: 0 0 14px; font-size: 11px; }
+      .legend-item { gap: 6px; padding: 7px 9px; }
+      #panel { padding: 14px; font-size: 14px; min-height: 72px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="vis-container">
+    <h2 class="sr-only">Mapa mental de Melo Caramelo con trece burbujas clicables que muestran un resumen de cada respuesta de la entrevista.</h2>
+    <header class="page-header">
+      <p class="eyebrow">Mapa mental · Entrevista</p>
+      <h1>Melo Caramelo</h1>
+      <p class="subtitle">Conoce la historia, el equipo y la forma de trabajar del emprendimiento.</p>
+    </header>
+    <svg id="map" viewBox="0 0 920 554" role="img">
+      <title>Mapa mental de Melo Caramelo</title>
+      <desc>El logo de Melo Caramelo al centro con trece burbujas alrededor, una por cada pregunta de la entrevista.</desc>
+    </svg>
+
+    <div class="legend">
+      <span class="legend-item"><span class="legend-dot" style="background:#eb3257"></span>Identidad y origen</span>
+      <span class="legend-item"><span class="legend-dot" style="background:#b7df39"></span>Organización y operación</span>
+    </div>
+
+    <div id="panel">
+      <div class="panel-hint">Selecciona una burbuja para descubrir más sobre Melo Caramelo.</div>
+    </div>
+  </div>
+
+  <script>
+    const N = [
+      ["Qué es", 0, "1. ¿Qué es Melo Caramelo?", "Negocio moderno dentro del campus universitario especializado en productos dulces y perros calientes."],
+      ["Oferta", 0, "2. ¿Qué servicios o productos ofrece?", "Helados, waffles, granizados, jugos, sodificadas, chamoy y perros calientes."],
+      ["Público", 0, "4. ¿A qué tipo de público está orientado?", "Principalmente a la comunidad de la Universidad de Ibagué y a otros jóvenes interesados."],
+      ["Tipo", 0, "5. ¿Qué tipo de negocio es?", "Es un emprendimiento independiente desarrollado dentro del entorno universitario."],
+      ["Origen", 0, "6. ¿Cómo surgió la creación del local?", "Surgió tras un año de presentar propuestas, documentación y proyecciones a los directivos de la Universidad de Ibagué, compitiendo con otros establecimientos hasta obtener el aval."],
+      ["Propuesta", 0, "7. ¿Cuál es su propuesta al público?", "Ofrecer opciones dulces o saladas a precios accesibles en el campus, funcionando además como punto de encuentro para charlar, concretar ideas y descansar entre clases."],
+      ["Equipo", 0, "3. ¿Cuántas personas trabajan en el local?", "Tres personas en dos líneas: Gina y Carlos en Melo Caramelo Dulce, y la colaboradora Luz en Melo Caramelo Perros Calientes."],
+      ["Roles", 1, "13. ¿Existen roles dentro de la organización?", "Carlos Mario (fundador/dueño): caja, atención al cliente e inventario. Gina (fundadora/dueña): administración, manipulación de alimentos y armado de pedidos. Señora Luz (colaboradora): armado de perros calientes."],
+      ["Procesos", 1, "8. ¿Hay procedimientos, tiempos o reglas definidas?", "Antes de abrir preparan los toppings e implementos de ambas líneas. Operan con un horario flexible adaptado al flujo de estudiantes en sus horas libres o \"huecos\"."],
+      ["Decisiones", 1, "9. ¿Quién toma las decisiones y cómo se controla?", "Los dueños (Gina y Carlos) definen la evolución, financiamiento, compra de materias primas, apertura y cierre; el control diario se apoya en las habilidades y aptitudes de los tres trabajadores."],
+      ["Motivación", 1, "10. ¿Cómo se motiva y reconoce al equipo?", "La principal motivación es lograr un crecimiento exponencial para abrir más puntos de venta en Ibagué y consolidar un negocio autosustentable para sus dueños."],
+      ["Tecnología", 1, "11. ¿Cómo influye la tecnología en el trabajo?", "Cuentan con máquinas de helados y waffles, y han automatizado sus procesos financieros y logísticos mediante un sistema POS."],
+      ["Ambiente", 1, "12. ¿Qué hacen por el ambiente y la comunidad?", "Usan desechables (vasos, cucharas y tenedores) reciclables y compostables para reducir el impacto ambiental, y han generado empleo para conocidos con planes de crear nuevas vacantes al crecer."]
+    ];
+
+    const svg = document.getElementById("map");
+    const panel = document.getElementById("panel");
+    const NS = "http://www.w3.org/2000/svg";
+    const [cx, cy, rx, ry, W, H, R] = [460, 280, 355, 225, 128, 46, 70];
+
+    const el = (tag, attrs, parent, text) => {
+      const node = document.createElementNS(NS, tag);
+      for (const [k, v] of Object.entries(attrs)) node.setAttribute(k, v);
+      if (text) node.textContent = text;
+      return parent.appendChild(node);
+    };
+
+    const pos = N.map((_, i) => {
+      const a = (-90 + (i * 360) / N.length) * (Math.PI / 180);
+      return { x: cx + rx * Math.cos(a), y: cy + ry * Math.sin(a) };
+    });
+
+    pos.forEach(({ x, y }, i) => {
+      const dx = x - cx, dy = y - cy, d = Math.hypot(dx, dy);
+      const ux = dx / d, uy = dy / d;
+      const t = Math.min((W / 2 + 5) / Math.abs(ux || 1e-6), (H / 2 + 5) / Math.abs(uy || 1e-6));
+      el("line", {
+        x1: cx + ux * R, y1: cy + uy * R,
+        x2: x - ux * t, y2: y - uy * t,
+        stroke: N[i][1] ? "#91b81c" : "#eb3257",
+        "stroke-width": 1.7, "stroke-linecap": "round", opacity: 0.65
+      }, svg);
+    });
+
+    const center = el("g", {}, svg);
+    const defs = el("defs", {}, center);
+    const clip = el("clipPath", { id: "logo-clip", clipPathUnits: "userSpaceOnUse" }, defs);
+    el("circle", { cx, cy, r: 62 }, clip);
+    el("circle", { class: "center-ring", cx, cy, r: R, "stroke-width": 5 }, center);
+    el("image", {
+      href: "LOGO.jpg",
+      x: cx - 62, y: cy - 62, width: 124, height: 124,
+      preserveAspectRatio: "xMidYMid slice",
+      "clip-path": "url(#logo-clip)",
+      role: "img", "aria-label": "Logo de Melo Caramelo"
+    }, center);
+
+    const rects = N.map(([label, group], i) => {
+      const { x, y } = pos[i];
+      const g = el("g", { class: `node ${group ? "operation" : "identity"}`, "data-i": i }, svg);
+      const rect = el("rect", { x: x - W / 2, y: y - H / 2, width: W, height: H, rx: H / 2, "stroke-width": 1 }, g);
+      el("text", { class: "th", x, y, "text-anchor": "middle", "dominant-baseline": "central" }, g, label);
+      return rect;
+    });
+
+    svg.addEventListener("click", (e) => {
+      const node = e.target.closest(".node");
+      if (!node) return;
+      const idx = +node.dataset.i;
+      rects.forEach((r, j) => r.setAttribute("stroke-width", idx === j ? "2.5" : "1"));
+      const [, , q, a] = N[idx];
+      panel.innerHTML = `<div class="panel-q">${q}</div><div>${a}</div>`;
+    });
+  </script>
+</body>
+</html>
